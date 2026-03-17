@@ -60,6 +60,7 @@ def _integrated_brier_manual(ev: EvalSurv, time_grid: np.ndarray) -> float:
 	return float(np.trapz(scores, time_grid) / (time_grid[-1] - time_grid[0]))
 
 class SurvivalTextDataset(Dataset):
+	"""Dataset for survival analysis that tokenizes text and returns (input, (duration, event)) pairs."""
 
 	def __init__(
 		self,
@@ -67,14 +68,17 @@ class SurvivalTextDataset(Dataset):
 		tokenizer: AutoTokenizer,
 		max_length: int = 256,
 	):
+		"""Initialize the dataset with text data, tokenizer, and maximum sequence length."""
 		self.df = df.reset_index(drop=True)
 		self.tokenizer = tokenizer
 		self.max_length = max_length
 
 	def __len__(self) -> int:
+		"""Return the total number of samples in the dataset."""
 		return len(self.df)
 
 	def __getitem__(self, idx: int) -> Dict[str, Any]:
+		"""Get a single sample by index, tokenizing the text and returning input tensors with survival labels."""
 		row = self.df.iloc[idx]
 		text = str(row["text"])
 
@@ -130,6 +134,7 @@ def _collate_coxcc_batch(batch):
 class CoxCCTextDataset(Dataset):
 	"""Case-control dataset for text: sorted by duration, cases (event=1) with n_control at-risk controls."""
 	def __init__(self, df: pd.DataFrame, tokenizer: AutoTokenizer, max_length: int = 256, n_control: int = 1):
+		"""Initialize case-control dataset with tokenized text and at-risk control sampling."""
 		self.n_control = n_control
 		df = df.sort_values("duration").reset_index(drop=True)
 		self.df = df
@@ -153,9 +158,11 @@ class CoxCCTextDataset(Dataset):
 			self._input_list.append(x)
 
 	def __len__(self):
+		"""Return the number of case samples (events) in the dataset."""
 		return len(self.case_indices)
 
 	def __getitem__(self, idx):
+		"""Get case samples with their corresponding at-risk control samples for CoxCC training."""
 		if isinstance(idx, (int, np.integer)):
 			idx = [idx]
 		pos = self.case_indices[idx]
@@ -173,6 +180,7 @@ class CoxCCFlatDataset(Dataset):
 	"""Per-sample (x, (duration, event)) dataset for baseline/Brier; no case-control sampling."""
 
 	def __init__(self, df: pd.DataFrame, tokenizer: AutoTokenizer, max_length: int = 256):
+		"""Initialize flat dataset with tokenized text for evaluation purposes."""
 		self.df = df.reset_index(drop=True)
 		self.tokenizer = tokenizer
 		self.max_length = max_length
@@ -195,9 +203,11 @@ class CoxCCFlatDataset(Dataset):
 			self._input_list.append(x)
 
 	def __len__(self) -> int:
+		"""Return the total number of samples in the dataset."""
 		return len(self.df)
 
 	def __getitem__(self, idx: int):
+		"""Get a single tokenized sample with its survival labels (duration, event)."""
 		x = {k: v.clone() for k, v in self._input_list[idx].items()}
 		row = self.df.iloc[idx]
 		y = (
@@ -224,10 +234,12 @@ def _get_g_from_loader(loader: DataLoader, model: nn.Module, device: torch.devic
 
 
 class BertForSurvival(PreTrainedModel):
+	"""Transformer-based survival analysis model with MLP head for Cox regression."""
 
 	config_class = AutoConfig
 
 	def __init__(self, config, num_nodes=[32,32], dropout=0.1,batch_norm=True):
+		"""Initialize the model with a pretrained encoder and a survival prediction head."""
 		super().__init__(config)
 
 		self.encoder = AutoModel.from_config(config)
@@ -264,6 +276,7 @@ class BertForSurvival(PreTrainedModel):
 		token_type_ids=None,
 		**kwargs,
 	) -> Dict[str, torch.Tensor]:
+		"""Forward pass: encode text with transformer and predict survival log-hazard through MLP head."""
 		encoder_inputs = {
 			"input_ids": input_ids,
 			"attention_mask": attention_mask,
@@ -303,6 +316,7 @@ class TrainingConfig:
 
 
 def parse_args():
+	"""Parse command-line arguments for training configuration including model, data paths, and hyperparameters."""
 	parser = argparse.ArgumentParser(description="Train survival analysis model on text data")
 	
 	parser.add_argument(
@@ -396,6 +410,7 @@ def parse_args():
 
 
 def main():
+	"""Main training function: loads data, initializes model, trains using CoxCC loss, and evaluates with C-index and Brier score."""
 	args = parse_args()
 	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 	output_dir = os.path.join("./runs", args.run_name)

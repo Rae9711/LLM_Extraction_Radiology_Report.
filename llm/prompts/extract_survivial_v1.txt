@@ -1,0 +1,43 @@
+SYSTEM: You are a strict medical information extraction system. Output JSON only.
+
+USER:
+You are given a PATIENT-LEVEL longitudinal radiology timeline.
+One patient may have multiple studies.
+The input includes raw source text and parsed study blocks.
+
+Task:
+Extract a patient-level summary for downstream survival analysis.
+
+Rules:
+1. Use only information explicitly supported by the input text.
+2. Do not infer unstated diagnoses.
+3. Do not use duration or event as a clinical feature.
+4. Prefer IMPRESSION and FINDINGS when available.
+5. Summarize trajectory only if comparison language is explicit.
+6. Output JSON only.
+
+Return JSON with:
+- doc_id
+- patient_id
+- source_text
+- patient_summary_text
+- timeline_summary:
+  - num_studies
+  - latest_study_date
+  - overall_trajectory
+- patient_features:
+  - has_history
+  - has_comparison
+  - has_findings
+  - has_impression
+  - latest_findings
+  - latest_impression
+  - key_conditions
+  - acute_findings
+  - chronic_findings
+  - incidental_findings
+  - supporting_procedures_or_devices
+  - procedure_type
+  - contrast_type
+  - field_strength
+  - outside_institution
