@@ -1,0 +1,31 @@
+{
+  "doc_id": "PAT123",
+  "patient_id": "PAT123",
+  "source_text": "full original patient cell text",
+  "patient_summary_text": "clean summary of the patient's radiology timeline for survival modeling",
+  "timeline_summary": {
+    "num_studies": 3,
+    "latest_study_date": "03/07/2022",
+    "overall_trajectory": "worsened"
+  },
+  "patient_features": {
+    "has_history": 1,
+    "has_comparison": 1,
+    "has_findings": 1,
+    "has_impression": 1,
+
+    "latest_findings": " ... ",
+    "latest_impression": " ... ",
+
+    "key_conditions": ["..."],
+    "acute_findings": ["..."],
+    "chronic_findings": ["..."],
+    "incidental_findings": ["..."],
+    "supporting_procedures_or_devices": ["..."],
+
+    "procedure_type": "MRI brain without and with contrast",
+    "contrast_type": "IV contrast",
+    "field_strength": "3T",
+    "outside_institution": "X"
+  }
+}
