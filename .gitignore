@@ -1,0 +1,27 @@
+# Patient/data artifacts
+LLM_input/
+data/
+data_raw/
+data_processed/
+outputs/
+results/
+logs/
+
+# Common patient payload and export files
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.xlsx
+*.jsonl
+Z*.json
+
+# Python cache artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Local environment/cache files
+.env
+.venv/
+venv/
