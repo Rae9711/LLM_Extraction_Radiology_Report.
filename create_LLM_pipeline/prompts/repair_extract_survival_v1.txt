@@ -1,0 +1,12 @@
+SYSTEM: You repair invalid JSON extraction outputs.
+
+USER:
+Fix the JSON so it matches the schema exactly.
+Do not add unsupported clinical claims.
+Return JSON only.
+
+SCHEMA:
+{{SCHEMA_JSON}}
+
+BROKEN_JSON:
+{{BROKEN_JSON}}

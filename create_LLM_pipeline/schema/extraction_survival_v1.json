@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "extraction_survival_v1.json",
+  "title": "Generator-Evaluator Survival Extraction Schema v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "doc_id",
+    "patient_id",
+    "source_text",
+    "patient_summary_text",
+    "timeline_summary",
+    "patient_features",
+    "uncertainty"
+  ],
+  "properties": {
+    "doc_id": { "type": "string", "minLength": 1 },
+    "patient_id": { "type": "string", "minLength": 1 },
+    "source_text": { "type": "string", "minLength": 1 },
+    "patient_summary_text": { "type": "string" },
+    "timeline_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["num_studies", "latest_study_date", "overall_trajectory"],
+      "properties": {
+        "num_studies": { "type": "integer", "minimum": 0 },
+        "latest_study_date": { "type": ["string", "null"] },
+        "overall_trajectory": {
+          "type": "string",
+          "enum": ["improved", "worsened", "unchanged", "mixed", "not_mentioned"]
+        }
+      }
+    },
+    "patient_features": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "has_history",
+        "has_comparison",
+        "has_findings",
+        "has_impression",
+        "latest_findings",
+        "latest_impression",
+        "key_conditions",
+        "acute_findings",
+        "chronic_findings",
+        "incidental_findings",
+        "supporting_procedures_or_devices",
+        "procedure_type",
+        "contrast_type",
+        "field_strength",
+        "outside_institution"
+      ],
+      "properties": {
+        "has_history": { "type": ["integer", "null"], "enum": [0, 1, null] },
+        "has_comparison": { "type": ["integer", "null"], "enum": [0, 1, null] },
+        "has_findings": { "type": ["integer", "null"], "enum": [0, 1, null] },
+        "has_impression": { "type": ["integer", "null"], "enum": [0, 1, null] },
+        "latest_findings": { "type": "string" },
+        "latest_impression": { "type": "string" },
+        "key_conditions": { "type": "array", "items": { "type": "string" } },
+        "acute_findings": { "type": "array", "items": { "type": "string" } },
+        "chronic_findings": { "type": "array", "items": { "type": "string" } },
+        "incidental_findings": { "type": "array", "items": { "type": "string" } },
+        "supporting_procedures_or_devices": { "type": "array", "items": { "type": "string" } },
+        "procedure_type": { "type": ["string", "null"] },
+        "contrast_type": { "type": ["string", "null"] },
+        "field_strength": { "type": ["string", "null"] },
+        "outside_institution": { "type": ["string", "null"] }
+      }
+    },
+    "uncertainty": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    }
+  }
+}

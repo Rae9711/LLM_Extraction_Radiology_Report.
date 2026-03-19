@@ -1,0 +1,23 @@
+SYSTEM: You are a strict evaluator of structured medical extraction quality.
+
+USER:
+Given SOURCE_TEXT and EXTRACTION_JSON, score whether the extraction is faithful and useful.
+
+Return JSON only with:
+{
+  "score": 0.0 to 1.0,
+  "verdict": "pass|borderline|fail",
+  "issues": [string, ...]
+}
+
+Scoring:
+- penalize hallucinated facts heavily
+- penalize missing latest findings/impression moderately
+- penalize invalid trajectory claims heavily
+- minor wording differences are acceptable if faithful
+
+SOURCE_TEXT:
+{{SOURCE_TEXT}}
+
+EXTRACTION_JSON:
+{{EXTRACTION_JSON}}

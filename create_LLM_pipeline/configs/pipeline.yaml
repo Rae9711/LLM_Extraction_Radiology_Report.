@@ -1,0 +1,53 @@
+pipeline_version: "survival_1.0.0"
+
+canonicalizer:
+  section_order:
+    - comparison
+    - interpretation_date
+    - outside_institution
+    - history
+    - procedure
+    - iv_contrast
+    - oral_contrast
+    - field_strength
+    - reconstructions
+    - findings
+    - impression
+    - summary
+    - other
+  preserve_case: true
+  preserve_punctuation: true
+generator:
+  model_name: "/RadOnc-MRI1/Student_Folder/whruiray/SA/local_models/Qwen2.5-3B-Instruct"
+  use_4bit: true
+  max_new_tokens: 2048
+  temperature: 0.0
+  do_sample: false
+  prompt_template: "prompts/extract_survival_v1.txt"
+  repair_prompt_template: "prompts/repair_extract_survival_v1.txt"
+  max_retries: 1
+  cache_dir: "cache/extract_survival"
+
+validators:
+  schema_path: "schema/extraction_survival_v1.json"
+  require_nonempty_summary: true
+
+evaluator:
+  model_name: "/RadOnc-MRI1/Student_Folder/whruiray/SA/local_models/Qwen2.5-7B-Instruct"
+  use_4bit: true
+  max_new_tokens: 2048
+  temperature: 0.0
+  prompt_template: "prompts/evaluate_survival_v1.txt"
+  skip: false
+
+gate:
+  pass_threshold: 0.80
+  fail_threshold: 0.30
+  max_repair_iterations: 1
+  re_evaluate_after_repair: true
+
+io:
+  input_json_dir: "input_patients_json"
+  output_jsonl: "data_processed/pipeline_extractions_survival.jsonl"
+  failures_jsonl: "data_processed/pipeline_failures_survival.jsonl"
+  scorecard_jsonl: "data_processed/pipeline_scorecards_survival.jsonl"

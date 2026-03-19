@@ -1,0 +1,6 @@
+# Keep directories, ignore patient/input payloads and runtime logs
+logs/*
+!logs/.gitkeep
+
+input_patients_json/*
+!input_patients_json/.gitkeep
