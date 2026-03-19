@@ -20,6 +20,9 @@ logs/
 *.jsonl
 Z*.json
 
+# Allow jsonl specifically under create_LLM_pipeline/data_processed
+!create_LLM_pipeline/data_processed/*.jsonl
+
 # Python cache artifacts
 __pycache__/
 *.py[cod]
