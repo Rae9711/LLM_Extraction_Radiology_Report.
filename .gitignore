@@ -7,6 +7,10 @@ outputs/
 results/
 logs/
 
+# Include this project folder's processed data per request
+!create_LLM_pipeline/data_processed/
+!create_LLM_pipeline/data_processed/**
+
 # Common patient payload and export files
 *.csv
 *.tsv
